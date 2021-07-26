@@ -60,14 +60,13 @@ class FormTests(TestCase):
             follow=True
         )
         self.assertRedirects(response, reverse('index'))
-        self.assertEqual(Post.objects.count(), posts_count+1)
+        self.assertEqual(Post.objects.count(), posts_count + 1)
         self.assertTrue(
             Post.objects.filter(
                 text='test-post',
                 author=self.user,
                 image='posts/small.gif',
-                ).exists()
-        )
+                ).exists())
 
     def test_edit_post(self):
         uploaded = SimpleUploadedFile(
@@ -97,5 +96,4 @@ class FormTests(TestCase):
                 text='test-post-edit',
                 author=self.user,
                 image='posts/small-2.gif',
-                ).exists()
-        )
+                ).exists())

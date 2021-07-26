@@ -8,7 +8,6 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from ..models import Group, Post, Follow
-from django import forms
 
 
 User = get_user_model()
@@ -71,7 +70,7 @@ class ViewTests(TestCase):
 
     def test_group_context(self):
         response = self.authorized_client.get(reverse(
-            'group_posts', 
+            'group_posts',
             kwargs={'slug': self.group.slug}))
         first_post = response.context['page'][0]
         self.assertEqual(first_post.text, 'test-post')
