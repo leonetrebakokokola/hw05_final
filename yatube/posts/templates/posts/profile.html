@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ author.get_full_name }}{% endblock %}
+{% block content %}
+<main role="main" class="container">
+  <div class="row">
+
+    {% include "includes/author.html" %}
+    
+    <div class="col-md-9">
+      {% for post in page %}            
+        {% include "includes/post_item.html" with post=post %} 
+      {% endfor %}
+      <!-- Остальные посты -->  
+      <!-- Здесь постраничная навигация паджинатора -->
+      {% include "paginator.html" %}
+    </div>
+  </div>
+</main>
+{% endblock %}
