@@ -149,7 +149,10 @@ def post_edit(request, username, post_id):
 
             return redirect('post', username=username, post_id=post_id)
 
-        context = {'form': form}
+        context = {
+            'form': form,
+            'post': post
+        }
 
         return render(request, 'posts/post_form.html', context)
 
