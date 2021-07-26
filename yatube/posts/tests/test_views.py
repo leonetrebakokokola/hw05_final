@@ -7,16 +7,17 @@ from django.core.cache import cache
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from ..models import Group, Post, Follow, Comment
+from ..models import Group, Post, Follow
 from django import forms
 
 
 User = get_user_model()
 
+
 MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
-# Проверка, что изображение передаётся в context
 class ViewTests(TestCase):
+    # Проверка, что изображение передаётся в context
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -69,8 +70,9 @@ class ViewTests(TestCase):
         self.assertEqual(first_post.image, 'posts/small.gif')
 
     def test_group_context(self):
-        response = self.authorized_client.get(
-                reverse('group_posts', kwargs={'slug': self.group.slug}))
+        response = self.authorized_client.get(reverse(
+            'group_posts', 
+            kwargs={'slug': self.group.slug}))
         first_post = response.context['page'][0]
         self.assertEqual(first_post.text, 'test-post')
         self.assertEqual(first_post.image, 'posts/small.gif')
@@ -101,7 +103,7 @@ class ViewTests(TestCase):
             reverse(
                 'profile_follow',
                 kwargs={'username': self.userTwo.username}))
-
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(Follow.objects.all().count(), 2)
 
     def test_unsubscribe(self):
@@ -109,6 +111,7 @@ class ViewTests(TestCase):
             reverse(
                 'profile_unfollow',
                 kwargs={'username': self.userTwo.username}))
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(Follow.objects.all().count(), 1)
 
     # Проверка есть ли пост на нужной странице - избранных авторов

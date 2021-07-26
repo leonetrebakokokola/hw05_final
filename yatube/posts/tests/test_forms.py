@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
-from posts.models import Group, Post
+from posts.models import Post
 from yatube import settings
 
 
@@ -13,8 +13,6 @@ User = get_user_model()
 
 MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
-
-
 # Проверка когда отправили пост - что всё успешно проходит с картинкой
 class FormTests(TestCase):
     @classmethod
@@ -52,7 +50,7 @@ class FormTests(TestCase):
             content_type='image/gif'
         )
         form_data = {
-            'text':'test-post',
+            'text': 'test-post',
             'author': self.user,
             'image': uploaded,
         }
@@ -78,13 +76,17 @@ class FormTests(TestCase):
             content_type='image/gif'
         )
         form_data_edit = {
-            'text':'test-post-edit',
+            'text': 'test-post-edit',
             'author': self.user,
             'image': uploaded,
         }
         response = self.authorized_client.post(
-            reverse('post_edit',
-                kwargs={'username': self.user.username, 'post_id': self.post.id}),
+            reverse(
+                'post_edit',
+                kwargs={
+                    'username': self.user.username,
+                    'post_id': self.post.id
+                }),
             data=form_data_edit,
             follow=True
         )
