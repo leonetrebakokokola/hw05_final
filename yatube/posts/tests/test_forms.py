@@ -12,6 +12,8 @@ from yatube import settings
 User = get_user_model()
 
 MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+
+
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
 # Проверка когда отправили пост - что всё успешно проходит с картинкой
 class FormTests(TestCase):
@@ -66,7 +68,7 @@ class FormTests(TestCase):
                 text='test-post',
                 author=self.user,
                 image='posts/small.gif',
-                ).exists())
+            ).exists())
 
     def test_edit_post(self):
         uploaded = SimpleUploadedFile(
@@ -96,4 +98,4 @@ class FormTests(TestCase):
                 text='test-post-edit',
                 author=self.user,
                 image='posts/small-2.gif',
-                ).exists())
+            ).exists())
