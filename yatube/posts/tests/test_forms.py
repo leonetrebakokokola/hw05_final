@@ -1,11 +1,10 @@
-# Все тесты из 5 спринта я удалил - чтоб не путаться
 import shutil
 import tempfile
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
-from posts.models import Post
+from posts.models import Post, Group
 from yatube import settings
 
 
@@ -21,9 +20,14 @@ class FormTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='test-user')
+        cls.group = Group.objects.create(
+            title='test-group',
+            slug='test-slug'
+        )
         cls.post = Post.objects.create(
             text='test-post',
             author=cls.user,
+            group=cls.group,
         )
 
         cls.small_gif = (
@@ -54,6 +58,7 @@ class FormTests(TestCase):
         form_data = {
             'text': 'test-post',
             'author': self.user,
+            'group': self.group.id,
             'image': uploaded,
         }
         response = self.authorized_client.post(
@@ -63,6 +68,18 @@ class FormTests(TestCase):
         )
         self.assertRedirects(response, reverse('index'))
         self.assertEqual(Post.objects.count(), posts_count + 1)
+        self.assertEqual(
+            Post.objects.filter(text='test-post').first().text,
+            form_data['text']
+        )
+        self.assertEqual(
+            Post.objects.filter(text='test-post').first().author,
+            form_data['author']
+        )
+        self.assertEqual(
+            Post.objects.filter(text='test-post').first().group.id,
+            form_data['group']
+        )
         self.assertTrue(
             Post.objects.filter(
                 text='test-post',
@@ -79,6 +96,7 @@ class FormTests(TestCase):
         form_data_edit = {
             'text': 'test-post-edit',
             'author': self.user,
+            'group': self.group.id,
             'image': uploaded,
         }
         response = self.authorized_client.post(
@@ -93,6 +111,18 @@ class FormTests(TestCase):
         )
         self.assertRedirects(response, reverse(
             'post', kwargs={'username': 'test-user', 'post_id': self.post.id}))
+        self.assertEqual(
+            Post.objects.filter(text='test-post-edit').first().text,
+            form_data_edit['text']
+        )
+        self.assertEqual(
+            Post.objects.filter(text='test-post-edit').first().author,
+            form_data_edit['author']
+        )
+        self.assertEqual(
+            Post.objects.filter(text='test-post-edit').first().group.id,
+            form_data_edit['group']
+        )
         self.assertTrue(
             Post.objects.filter(
                 text='test-post-edit',

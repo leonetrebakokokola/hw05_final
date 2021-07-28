@@ -8,14 +8,13 @@
       <h5 class="card-header">Добавить комментарий:</h5>
       <div class="card-body">
         <div class="form-group">
-          <textarea>{{ form.text }}</textarea>
+          {{ form.text|addclass:"form-control" }}
         </div>
         <button type="submit" class="btn btn-primary">Отправить</button>
       </div>
     </form>
   </div>
 {% endif %}
-
 <!-- Комментарии -->
 {% for item in comments %}
   <div class="media card mb-4">
