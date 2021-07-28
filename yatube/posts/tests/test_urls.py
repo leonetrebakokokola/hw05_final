@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from ..models import Group, Post
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -63,6 +64,7 @@ class URLTests(TestCase):
             response, f'/test-user/{self.post.id}/')
 
     def test_url_template(self):
+        cache.clear()
         templates_url_names = {
             '/': 'posts/index.html',
             '/group/test-slug/': 'posts/group.html',

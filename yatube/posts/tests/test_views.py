@@ -205,6 +205,7 @@ class PaginatorViewTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_paginator_first_page(self):
+        cache.clear()
         pages_names = {
             reverse('index'),
             reverse('group_posts', kwargs={'slug': self.group.slug}),
